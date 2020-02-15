@@ -1,8 +1,8 @@
 <template>
   <div>
     <form>
-      <fieldset>
-        <legend>{{
+      <fieldset :class=" { 'error' : errorMessage}">
+        <legend :class=" { 'error' : errorMessage}">{{
           editando ? `Você está editando a ligação ${formLigacao.id}`
           : 'Criar Ligação'}}
         </legend>
@@ -43,18 +43,33 @@
 
         <br/>
         <div v-if="editando">
-          <button type="button" @click="editarLigacao">Salvar Alterações</button>
-          &nbsp;
-          <button type="button" @click="limparCampos">Limpar Campos</button>
-          &nbsp;
-          <button type="button" @click="cancelarEdicao">Cancelar Edição</button>
+          <button
+            type="button"
+            class="btn btn-success"
+            @click="editarLigacao">Salvar Alterações
+          </button>
+          <button
+            type="button"
+            class="btn btn-secondary"
+            @click="limparCampos">Limpar Campos
+          </button>
+          <button
+            type="button"
+            class="btn btn-danger"
+            @click="cancelarEdicao">Cancelar Edição
+          </button>
         </div>
         <div v-else>
-          <button type="button" @click="criarLigacao">Adicionar</button>
-          &nbsp;
-          <button type="button" @click="limparCampos">Limpar Campos</button>
-          &nbsp;
-          <button type="button" @click="apagarLista">Apagar Lista</button>
+          <button
+            type="button"
+            class="btn btn-success"
+            @click="criarLigacao">Adicionar
+          </button>
+          <button
+            type="button"
+            class="btn btn-secondary"
+            @click="limparCampos">Limpar Campos
+          </button>
         </div>
 
       </fieldset>
@@ -64,7 +79,7 @@
 
 <script>
 export default {
-  props: ['ligacao'],
+  props: ['ligacao', 'errorMessage'],
   data() {
     return {
       formLigacao: '',
@@ -74,7 +89,7 @@ export default {
   methods: {
     criarLigacao() {
       this.$emit('adicionar-ligacao', { ...this.formLigacao });
-      this.formLigacao = this.novaLigacao();
+      // this.formLigacao = this.novaLigacao();
     },
     novaLigacao() {
       return {
@@ -84,9 +99,6 @@ export default {
         departamento: '',
         urgente: false,
       };
-    },
-    apagarLista() {
-      this.$emit('apagar-lista');
     },
     editarLigacao() {
       this.$emit('editar-ligacao', { ...this.formLigacao });
@@ -123,5 +135,8 @@ export default {
 </script>
 
 <style>
-
+  .error {
+    color: tomato;
+    border-color: red;
+  }
 </style>
