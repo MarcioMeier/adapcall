@@ -6,80 +6,98 @@
           editando ? `Você está editando a ligação ${formLigacao.id}`
           : 'Criar Ligação'}}
         </legend>
-        <div>
-          Solicitante
-          <input type="text"
-          v-model="formLigacao.solicitante"
-          >
-        </div>
+        <div class="form-row" style="margin-left:5px;">
+          <div class="form-group col-md-6">
+            <label>Solicitante</label>
+            <input
+              type="text"
+              class="form-control"
+              id="solicitante"
+              v-model="formLigacao.solicitante"
+            >
+          </div>
 
-        <div>
-          Solicitado
-          <input type="text"
-          v-model="formLigacao.solicitado"
-          >
-        </div>
+          <div class="form-group col-md-6">
+            <label>Solicitado</label>
+            <input
+              type="text"
+              class="form-control"
+              id="solicitado"
+              v-model="formLigacao.solicitado"
+            >
+          </div>
 
-        <div>
-          Cliente
-          <input type="text"
-          v-model="formLigacao.cliente"
-          >
-        </div>
+          <div class="form-group col-md-6">
+            <label>Cliente</label>
+            <input
+              type="text"
+              class="form-control"
+              id="cliente"
+              v-model="formLigacao.cliente"
+            >
+          </div>
 
-        <div>
-          Departamento
-          <input type="text"
-          v-model="formLigacao.departamento"
-          >
-        </div>
+          <div class="form-group col-md-6">
+            <label>Departamento</label>
+            <input
+              type="text"
+              class="form-control"
+              id="departamento"
+              v-model="formLigacao.departamento"
+            >
+          </div>
 
-        <div>
-          Urgente?
-          <input type="checkbox"
-          v-model="formLigacao.urgente"
-          >
-        </div>
-
-        <br/>
-        <div v-if="editando">
-          <button
-            type="button"
-            class="btn btn-success"
-            @click="editarLigacao">Salvar Alterações
-          </button>
-          <button
-            type="button"
-            class="btn btn-secondary"
-            @click="limparCampos">Limpar Campos
-          </button>
-          <button
-            type="button"
-            class="btn btn-danger"
-            @click="cancelarEdicao">Cancelar Edição
-          </button>
-        </div>
-        <div v-else>
-          <button
-            type="button"
-            class="btn btn-success"
-            @click="criarLigacao">Adicionar
-          </button>
-          <button
-            type="button"
-            class="btn btn-secondary"
-            @click="limparCampos">Limpar Campos
-          </button>
-        </div>
-
+          <div class="form-group">
+            <div class="custom-control custom-checkbox">
+              <input
+                class="custom-control-input"
+                type="checkbox"
+                id="urgente"
+                v-model="formLigacao.urgente"
+              >
+              <label class="custom-control-label" for="urgente">
+                Urgente?
+              </label>
+            </div>
+          </div>
+          </div>
       </fieldset>
     </form>
+    <div v-if="isLoading">
+      <ac-button type="info">
+        <ac-loading>Carregando</ac-loading>
+      </ac-button>
+    </div>
+    <div v-else-if="editando">
+      <ac-button
+        type="success"
+        @click.native.prevent="editarLigacao">Salvar Alterações
+      </ac-button>
+      <ac-button
+        type="secondary"
+        @click.native.prevent="limparCampos">Limpar Campos
+      </ac-button>
+      <ac-button
+        type="danger"
+        @click.native.prevent="cancelarEdicao">Cancelar Edição
+      </ac-button>
+    </div>
+    <div v-else>
+      <ac-button
+        type="success"
+        @click.native.prevent="criarLigacao">Adicionar
+      </ac-button>
+      <ac-button
+        type="secondary"
+        @click.native.prevent="limparCampos">Limpar Campos
+      </ac-button>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  props: ['ligacao', 'errorMessage'],
+  props: ['ligacao', 'errorMessage', 'isLoading'],
   data() {
     return {
       formLigacao: '',

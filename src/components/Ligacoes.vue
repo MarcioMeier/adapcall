@@ -24,10 +24,20 @@
           <td>{{ ligacao.departamento }}</td>
           <td>{{ ligacao.urgente ? 'Sim' : 'Não' }}</td>
           <td v-if="!isLoading[indice]">
-            <button class="btn btn-primary" @click="ExcluirLigacao(indice)">Excluir</button>
-            <button class="btn btn-secondary" @click="EditarLigacao(indice)">Editar</button>
+            <ac-button
+              type="primary"
+              @click.native.prevent="ExcluirLigacao(indice)"
+            >
+              Excluir
+            </ac-button>
+            <ac-button
+              type="secondary"
+              @click.native.prevent="EditarLigacao(indice)"
+            >
+              Editar
+            </ac-button>
           </td>
-          <td v-if="isLoading[indice]" colspan="2">Carregando...</td>
+          <td v-if="isLoading[indice]" colspan="2"><ac-loading></ac-loading></td>
         </tr>
       </tbody>
     </table>

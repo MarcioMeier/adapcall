@@ -1,32 +1,33 @@
 <template>
   <div class="home">
     <div v-if="errorMessage" class="alert alert-danger"> {{ errorMessage }}</div>
-    <div v-show="isLoading['list']">Carregando Lista...</div>
+    <div v-show="isLoading['list']"><ac-full-loading></ac-full-loading></div>
 
     <div v-show="!isLoading['list']">
-      <button
-        class="btn btn-primary"
-        @click="() => mostraFormulario = !mostraFormulario"
-        >
+      <ac-button
+        type="danger"
+        @click.native.prevent="() => mostraFormulario = !mostraFormulario"
+        :icon="mostraFormulario ? 'fa-angle-up' : 'fa-angle-down'">
           {{ mostraFormulario ? 'Fechar Formulário' : 'Abrir Formulário'}}
-      </button>
-      <button
-      class="btn btn-primary"
-      @click="carregarLista">
+      </ac-button>
+      <ac-button
+      @click.native.prevent="carregarLista">
         Recarregar Lista
-      </button>
+      </ac-button>
       <br/>
 
-      <div v-show="isLoading['form']">Carregando...</div>
-      <div v-show="!isLoading['form']">
-        <FormLigacao
-          v-if="mostraFormulario"
-          :ligacao="ligacao"
-          :error-message="errorMessage"
-          @adicionar-ligacao="adicionarLigacao"
-          @editar-ligacao="editarLigacao"
-          @reset-form="resetForm"
-        />
+      <div>
+        <transition name="fade">
+          <FormLigacao
+            v-if="mostraFormulario"
+            :ligacao="ligacao"
+            :error-message="errorMessage"
+            :is-loading="isLoading['form']"
+            @adicionar-ligacao="adicionarLigacao"
+            @editar-ligacao="editarLigacao"
+            @reset-form="resetForm"
+          />
+        </transition>
       </div>
       <h1>{{title}} <i class="fas fa-address-book"></i></h1>
       <Ligacoes
@@ -98,6 +99,8 @@ export default {
         url: `http://5e3589a5f7e55d0014ad4dca.mockapi.io/api/v1/ligacao/${id}`,
       });
 
+      this.$set(this.isLoading, indice, false);
+
       if (!response) return;
 
       this.ligacoes.splice(indice, 1);
@@ -116,7 +119,7 @@ export default {
     async carregarLista() {
       try {
         this.ligacoes = [];
-        const response = await this.request('list');
+        const response = await this.request({ id: 'list' });
         if (!response) return;
 
         this.ligacoes = response.data;
@@ -152,3 +155,12 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+</style>
