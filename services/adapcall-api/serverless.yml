@@ -11,7 +11,7 @@ provider:
 #    - Effect: "Allow"
 #      Action:
 #        - "s3:ListBucket"
-#      Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ServerlessDeploymentBucket" } ] ]  }
+    #  Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ServerlessDeploymentBucket" } ] ]  }
 #    - Effect: "Allow"
 #      Action:
 #        - "s3:PutObject"
@@ -32,9 +32,45 @@ package:
   - node_modules/aws-sdk/**
 
 functions:
-  hello:
-    handler: handler.hello
+  listLigacoes:
+    handler: src/v1/ligacoes/list.run
     events:
       - http:
-          path: hello-world
+          path: v1/ligacoes
           method: get
+
+resources:
+  Resources:
+    tableLigacoes:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        TableName: Ligacoes
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+
+plugins:
+  - serverless-dynamodb-local
+  - serverless-offline
+
+custom:
+  dynamodb:
+  # If you only want to use DynamoDB Local in some stages, declare them here
+    stages:
+      - dev
+    start:
+      port: 8000
+      inMemory: true
+      migrate: true
+      seed: true
+      convertEmptyValues: true
+
+    seed:
+      domain:
+        sources:
+          - table: Ligacoes
+            sources: [./data/ligacoes-iniciais.json]
